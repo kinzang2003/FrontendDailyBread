@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "./../assets/logo.svg";
 
-export default function Signin() {
+export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState(["", "", "", ""]);
-  const [step, setStep] = useState("signin");
+  const [step, setStep] = useState("SignIn");
   const [error, setError] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -73,14 +73,14 @@ export default function Signin() {
     }
 
     console.log("Password reset successfully");
-    setStep("signin");
+    setStep("SignIn");
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <img src={Logo} alt="Logo" className="w-32 mb-6" />
 
-      {step === "signin" && (
+      {step === "SignIn" && (
         <div className="bg-white p-6 rounded-lg shadow-md w-80">
           <h2 className="text-2xl font-bold mb-4 text-center">Sign In</h2>
           {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
