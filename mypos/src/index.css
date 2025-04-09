@@ -2,8 +2,9 @@
 
 @theme {
   --font-display: "Satoshi", "sans-serif";
-  --color-primary: #18181B;
-  --color-secondary: #E4E4E7;
+  --color-primary: #18181b;
+  --color-primary-light: #2b2b2b;
+  --color-secondary: #e4e4e7;
   --color-accent: #525252;
   --breakpoint-3xl: 120rem;
   --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
