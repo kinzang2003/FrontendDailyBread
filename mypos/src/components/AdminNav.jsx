@@ -27,7 +27,7 @@ export default function AdminNav() {
       <div className="flex gap-6 items-center text-gray-600">
         <Bell
           className="w-5 h-5 cursor-pointer hover:text-blue-600"
-          onClick={() => navigate("/notifications")}
+          onClick={() => navigate("/report")}
         />
         <Ban
           className="w-5 h-5 cursor-pointer hover:text-red-500"
