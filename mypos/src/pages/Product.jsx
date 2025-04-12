@@ -6,6 +6,9 @@ export default function Product() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [cart, setCart] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const PRODUCTS_PER_PAGE = 6;
 
   const products = [
     {
@@ -33,6 +36,12 @@ export default function Product() {
       product.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE
+  );
+
   const handleAddToCart = (product) => {
     const existing = cart.find((item) => item.name === product.name);
     if (existing) {
@@ -44,6 +53,10 @@ export default function Product() {
     } else {
       setCart([...cart, { ...product, qty: 1 }]);
     }
+  };
+
+  const handleRemoveFromCart = (productName) => {
+    setCart(cart.filter((item) => item.name !== productName));
   };
 
   const total = cart.reduce((acc, item) => acc + item.qty * item.price, 0);
@@ -78,7 +91,10 @@ export default function Product() {
               className={`px-3 py-1 rounded-full text-sm border ${
                 category === cat ? "bg-black text-white" : "bg-gray-200"
               }`}
-              onClick={() => setCategory(cat)}
+              onClick={() => {
+                setCategory(cat);
+                setCurrentPage(1);
+              }}
             >
               {cat}
             </button>
@@ -87,15 +103,15 @@ export default function Product() {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        {filteredProducts.map((item, index) => (
+        {paginatedProducts.map((item, index) => (
           <div
             key={index}
-            className="w-[182px] h-[215px] bg-gray-100 rounded p-2 flex flex-col items-center justify-between"
+            className="w-full bg-gray-100 rounded p-2 flex flex-col items-center justify-between"
           >
             <img
               src={item.image}
               alt={item.name}
-              className="w-[158px] h-[158px] object-contain"
+              className="w-full h-36 object-contain"
             />
             <div className="text-center text-sm">
               <div className="font-medium">
@@ -116,8 +132,50 @@ export default function Product() {
         ))}
       </div>
 
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-4">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-1 rounded ${
+                currentPage === page ? "bg-black text-white" : "bg-gray-200"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+      )}
+
       {cart.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 bg-white shadow-md p-4 border-t mt-4">
+          <div className="mb-2 max-h-40 overflow-y-auto">
+            {cart.map((item, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between mb-2"
+              >
+                <div className="flex items-center gap-2">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-10 h-10 object-contain"
+                  />
+                  <div className="text-sm">
+                    <div>{item.name}</div>
+                    <div className="text-gray-500">x {item.qty}</div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleRemoveFromCart(item.name)}
+                  className="text-xs text-red-500 hover:underline"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
           <div className="flex justify-between mb-2">
             <span className="font-medium">Cart Total:</span>
             <span className="font-bold">Nu. {total}</span>

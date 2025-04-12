@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Logo from "./../assets/logo.svg";
+import { icons } from "../assets/constants/icons";
+import { login } from "../auth/auth";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -12,13 +13,16 @@ export default function SignIn() {
   const [newPassword, setNewPassword] = useState("");
   const navigate = useNavigate();
 
-  // Mock user (replace with API call)
-  const validUser = {
-    email: "devk@gmail.com",
-    password: "password1234",
-  };
+  const validUsers = [
+    { email: "devk@gmail.com", password: "password1234", role: "admin" },
+    { email: "user@gmail.com", password: "password1234", role: "user" },
+  ];
 
   const validateEmail = (email) => /^\S+@\S+\.\S+$/.test(email.trim());
+
+  const user = validUsers.find(
+    (u) => u.email === email && u.password === password
+  );
 
   const handleSignIn = () => {
     setError("");
@@ -30,9 +34,18 @@ export default function SignIn() {
       setError("Invalid email format.");
       return;
     }
-    if (email === validUser.email && password === validUser.password) {
-      console.log("Authentication successful");
-      navigate("/dashboard");
+
+    const user = validUsers.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (user) {
+      login({ email: user.email, role: user.role });
+      if (user.role === "admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/product");
+      }
     } else {
       setError("Invalid credentials.");
     }
@@ -78,7 +91,7 @@ export default function SignIn() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <img src={Logo} alt="Logo" className="w-32 mb-6" />
+      <img src={icons.logo} alt="Logo" className="w-32 mb-6" />
 
       {step === "SignIn" && (
         <div className="bg-white p-6 rounded-lg shadow-md w-80">

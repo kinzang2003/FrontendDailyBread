@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Coke",
+    "description": "L",
+    "image": "coke.png",
+    "price": 65,
+    "stock": 8,
+    "category": "Beverages",
+    "disabled": false
+  },
+  {
+    "id": 2,
+    "name": "Coke",
+    "description": "S",
+    "image": "coke.png",
+    "price": 25,
+    "stock": 10,
+    "category": "Beverages",
+    "disabled": false
+  }
+]
