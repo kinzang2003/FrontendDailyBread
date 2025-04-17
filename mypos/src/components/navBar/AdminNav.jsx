@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { getUser, logout } from "../auth/auth";
-import { icons } from "../assets/constants/icons";
+import { getUser, logout } from "../../auth/auth";
+import { icons } from "../../assets/constants/icons";
 import { Bell, Ban, User } from "lucide-react";
 
 export default function AdminNav() {

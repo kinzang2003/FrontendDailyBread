@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 
 export default function Dashboard() {
   const [transactionsToday] = useState(12);
+  const [lowStockItems] = useState(5);
   const navigate = useNavigate();
 
   return (
@@ -28,9 +29,7 @@ export default function Dashboard() {
         >
           <div>
             <h2 className="text-lg font-medium">Low Stock Items</h2>
-            <p className="text-sm text-gray-500 mt-2">
-              View items that need restocking
-            </p>
+            <p className="text-2xl font-bold mt-2">{lowStockItems}</p>
           </div>
           <ChevronRight className="w-6 h-6 text-gray-500" />
         </div>

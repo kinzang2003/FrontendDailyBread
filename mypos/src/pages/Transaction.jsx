@@ -43,7 +43,7 @@ export default function Transaction() {
             <th>Time</th>
             <th>Cash</th>
             <th>MBOB</th>
-            <th>Total Payment</th>
+            <th>Total</th>
             <th>Orders</th>
           </tr>
         </thead>

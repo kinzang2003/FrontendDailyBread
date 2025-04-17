@@ -34,7 +34,7 @@ const initialProductSales = [
 ];
 
 export default function ReportAnalysis() {
-  const [sortType, setSortType] = useState(null);
+  const [sortType, setSortType] = useState("asc");
   const [view, setView] = useState("weekly");
 
   const sortedProducts = [...initialProductSales].sort((a, b) => {
@@ -79,13 +79,17 @@ export default function ReportAnalysis() {
       <div className="flex gap-2 mb-2">
         <button
           onClick={() => setSortType("asc")}
-          className="bg-gray-200 px-3 py-1 rounded"
+          className={`px-3 py-1 rounded ${
+            sortType === "asc" ? "bg-black text-white" : "bg-gray-200"
+          }`}
         >
           Ascending
         </button>
         <button
           onClick={() => setSortType("desc")}
-          className="bg-gray-200 px-3 py-1 rounded"
+          className={`px-3 py-1 rounded ${
+            sortType === "desc" ? "bg-black text-white" : "bg-gray-200"
+          }`}
         >
           Descending
         </button>

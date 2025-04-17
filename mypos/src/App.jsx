@@ -9,18 +9,19 @@ import {
 import Cart from "./pages/Cart";
 import Cashier from "./pages/Cashier";
 import Dashboard from "./pages/Dashboard";
-import Details from "./pages/Details";
+import TransactionDetails from "./pages/TransactionDetail";
 import Inventory from "./pages/Inventory";
 import Product from "./pages/Product";
 import ReportAnalysis from "./pages/ReportAnalysis";
 import SignIn from "./pages/SignIn";
 import Transaction from "./pages/Transaction";
+import { CartProvider } from "./context/CartContext";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 import { getUser } from "./auth/auth";
-import AdminNav from "./components/AdminNav";
-import CashierNav from "./components/CashierNav";
+import AdminNav from "./components/navBar/AdminNav";
+import CashierNav from "./components/navBar/CashierNav";
 
 function LayoutWrapper({ children }) {
   const location = useLocation();
@@ -41,82 +42,84 @@ function LayoutWrapper({ children }) {
 
 export default function App() {
   return (
-    <Router>
-      <LayoutWrapper>
-        <Routes>
-          {/* Public Route */}
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/" element={<Navigate to="/signin" />} />
+    <CartProvider>
+      <Router>
+        <LayoutWrapper>
+          <Routes>
+            {/* Public Route */}
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/" element={<Navigate to="/signin" />} />
 
-          {/* Routes for both admin and user */}
-          <Route
-            path="/product"
-            element={
-              <ProtectedRoute allowedRoles={["admin", "user"]}>
-                <Product />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/cart"
-            element={
-              <ProtectedRoute allowedRoles={["admin", "user"]}>
-                <Cart />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/transaction"
-            element={
-              <ProtectedRoute allowedRoles={["admin", "user"]}>
-                <Transaction />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/details"
-            element={
-              <ProtectedRoute allowedRoles={["admin", "user"]}>
-                <Details />
-              </ProtectedRoute>
-            }
-          />
+            {/* Routes for both admin and user */}
+            <Route
+              path="/product"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "user"]}>
+                  <Product />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "user"]}>
+                  <Cart />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/transaction"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "user"]}>
+                  <Transaction />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/details/:id"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "user"]}>
+                  <TransactionDetails />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Admin-only routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/report"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <ReportAnalysis />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/inventory"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <Inventory />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/cashier"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <Cashier />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </LayoutWrapper>
-    </Router>
+            {/* Admin-only routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/report"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <ReportAnalysis />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inventory"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <Inventory />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/cashier"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <Cashier />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </LayoutWrapper>
+      </Router>
+    </CartProvider>
   );
 }

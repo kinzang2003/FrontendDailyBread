@@ -2,6 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { icons } from "../assets/constants/icons";
 import { login } from "../auth/auth";
+import SignInForm from "../components/signin/SignIn";
+import ForgotPasswordForm from "../components/signin/ForgotPassword";
+import VerificationForm from "../components/signin/Verification";
+import ResetPasswordForm from "../components/signin/ResetPassword";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -20,32 +24,18 @@ export default function SignIn() {
 
   const validateEmail = (email) => /^\S+@\S+\.\S+$/.test(email.trim());
 
-  const user = validUsers.find(
-    (u) => u.email === email && u.password === password
-  );
-
   const handleSignIn = () => {
     setError("");
-    if (!email || !password) {
-      setError("Email and password are required.");
-      return;
-    }
-    if (!validateEmail(email)) {
-      setError("Invalid email format.");
-      return;
-    }
+    if (!email || !password)
+      return setError("Email and password are required.");
+    if (!validateEmail(email)) return setError("Invalid email format.");
 
     const user = validUsers.find(
       (u) => u.email === email && u.password === password
     );
-
     if (user) {
       login({ email: user.email, role: user.role });
-      if (user.role === "admin") {
-        navigate("/dashboard");
-      } else {
-        navigate("/product");
-      }
+      navigate(user.role === "admin" ? "/dashboard" : "/product");
     } else {
       setError("Invalid credentials.");
     }
@@ -53,38 +43,31 @@ export default function SignIn() {
 
   const handleForgotPassword = () => {
     setError("");
-    if (!validateEmail(email)) {
-      setError("Please enter a valid email.");
-      return;
-    }
+    if (!validateEmail(email)) return setError("Please enter a valid email.");
     console.log("Sending reset link to", email);
     setStep("verify");
   };
 
+  const handleCodeChange = (e, index) => {
+    let newCode = [...code];
+    newCode[index] = e.target.value;
+    setCode(newCode);
+  };
+
   const handleVerifyCode = () => {
-    if (code.join("") !== "1234") {
-      setError("Invalid verification code.");
-    } else {
-      setError("");
-      setStep("reset");
-    }
+    if (code.join("") !== "1234") return setError("Invalid verification code.");
+    setError("");
+    setStep("reset");
   };
 
   const handleResetPassword = () => {
     setError("");
-    if (!newPassword || !confirmPassword) {
-      setError("All password fields are required.");
-      return;
-    }
-    if (newPassword.length < 6) {
-      setError("Password must be at least 6 characters.");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
+    if (!newPassword || !confirmPassword)
+      return setError("All password fields are required.");
+    if (newPassword.length < 6)
+      return setError("Password must be at least 6 characters.");
+    if (newPassword !== confirmPassword)
+      return setError("Passwords do not match.");
     console.log("Password reset successfully");
     setStep("SignIn");
   };
@@ -92,120 +75,42 @@ export default function SignIn() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <img src={icons.logo} alt="Logo" className="w-32 mb-6" />
-
       {step === "SignIn" && (
-        <div className="bg-white p-6 rounded-lg shadow-md w-80">
-          <h2 className="text-2xl font-bold mb-4 text-center">Sign In</h2>
-          {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded mb-3"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded mb-3"
-          />
-          <button
-            onClick={handleSignIn}
-            className="w-full bg-primary text-white py-2 rounded hover:bg-primary-light"
-          >
-            Next
-          </button>
-          <p
-            className="text-primary text-sm mt-3 text-end cursor-pointer"
-            onClick={() => setStep("forgot-password")}
-          >
-            Forgot Password?
-          </p>
-        </div>
+        <SignInForm
+          email={email}
+          password={password}
+          error={error}
+          onEmailChange={(e) => setEmail(e.target.value)}
+          onPasswordChange={(e) => setPassword(e.target.value)}
+          onSignIn={handleSignIn}
+          onForgot={() => setStep("forgot-password")}
+        />
       )}
-
       {step === "forgot-password" && (
-        <div className="bg-white p-6 rounded-lg shadow-md w-80">
-          <h2 className="text-2xl font-bold mb-4 text-center">
-            Forgot Password
-          </h2>
-          {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded mb-3"
-          />
-          <button
-            onClick={handleForgotPassword}
-            className="w-full bg-primary text-white py-2 rounded hover:bg-primary-light"
-          >
-            Confirm Email
-          </button>
-        </div>
+        <ForgotPasswordForm
+          email={email}
+          error={error}
+          onEmailChange={(e) => setEmail(e.target.value)}
+          onConfirm={handleForgotPassword}
+        />
       )}
-
       {step === "verify" && (
-        <div className="bg-white p-6 rounded-lg shadow-md w-80">
-          <h2 className="text-2xl font-bold mb-4 text-center">
-            Enter Verification Code
-          </h2>
-          {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-          <div className="flex justify-between">
-            {code.map((val, index) => (
-              <input
-                key={index}
-                type="text"
-                maxLength="1"
-                className="w-12 p-2 text-center border rounded"
-                value={val}
-                onChange={(e) => {
-                  let newCode = [...code];
-                  newCode[index] = e.target.value;
-                  setCode(newCode);
-                }}
-              />
-            ))}
-          </div>
-          <button
-            onClick={handleVerifyCode}
-            className="w-full bg-primary text-white py-2 rounded hover:bg-primary-light mt-4"
-          >
-            Verify
-          </button>
-        </div>
+        <VerificationForm
+          code={code}
+          error={error}
+          onCodeChange={handleCodeChange}
+          onVerify={handleVerifyCode}
+        />
       )}
-
       {step === "reset" && (
-        <div className="bg-white p-6 rounded-lg shadow-md w-80">
-          <h2 className="text-2xl font-bold mb-4 text-center">
-            Reset Password
-          </h2>
-          {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-          <input
-            type="password"
-            placeholder="New Password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full p-2 border rounded mb-3"
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full p-2 border rounded mb-3"
-          />
-          <button
-            onClick={handleResetPassword}
-            className="w-full bg-primary text-white py-2 rounded hover:bg-primary-light"
-          >
-            Reset Password
-          </button>
-        </div>
+        <ResetPasswordForm
+          newPassword={newPassword}
+          confirmPassword={confirmPassword}
+          error={error}
+          onNewPasswordChange={(e) => setNewPassword(e.target.value)}
+          onConfirmPasswordChange={(e) => setConfirmPassword(e.target.value)}
+          onReset={handleResetPassword}
+        />
       )}
     </div>
   );

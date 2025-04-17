@@ -2,8 +2,8 @@
   {
     "id": 1,
     "name": "Coke",
-    "description": "L",
-    "image": "coke.png",
+    "description": "Large bottle - 1.25L",
+    "image": "coke_large.png",
     "price": 65,
     "stock": 8,
     "category": "Beverages",
@@ -12,11 +12,91 @@
   {
     "id": 2,
     "name": "Coke",
-    "description": "S",
-    "image": "coke.png",
+    "description": "Small bottle - 500ml",
+    "image": "coke_small.png",
     "price": 25,
     "stock": 10,
     "category": "Beverages",
+    "disabled": false
+  },
+  {
+    "id": 3,
+    "name": "Pepsi",
+    "description": "Large bottle - 1.25L",
+    "image": "pepsi_large.png",
+    "price": 65,
+    "stock": 6,
+    "category": "Beverages",
+    "disabled": false
+  },
+  {
+    "id": 4,
+    "name": "Water",
+    "description": "1L Mineral Water",
+    "image": "water.png",
+    "price": 20,
+    "stock": 25,
+    "category": "Beverages",
+    "disabled": false
+  },
+  {
+    "id": 5,
+    "name": "Lays Classic",
+    "description": "Salted Potato Chips 52g",
+    "image": "lays_classic.png",
+    "price": 30,
+    "stock": 20,
+    "category": "Snacks",
+    "disabled": false
+  },
+  {
+    "id": 6,
+    "name": "Snickers",
+    "description": "Chocolate Bar 50g",
+    "image": "snickers.png",
+    "price": 40,
+    "stock": 15,
+    "category": "Snacks",
+    "disabled": false
+  },
+  {
+    "id": 7,
+    "name": "Vanilla Ice Cream",
+    "description": "Cup - 100ml",
+    "image": "vanilla_ice_cream.png",
+    "price": 45,
+    "stock": 12,
+    "category": "Frozen",
+    "disabled": false
+  },
+  {
+    "id": 8,
+    "name": "Chicken Burger",
+    "description": "Grilled Chicken Patty with Veggies",
+    "image": "chicken_burger.png",
+    "price": 120,
+    "stock": 10,
+    "category": "Fast Food",
+    "disabled": false
+  },
+  {
+    "id": 9,
+    "name": "Cheese Pizza",
+    "description": "Regular size, 6 slices",
+    "image": "cheese_pizza.png",
+    "price": 180,
+    "stock": 5,
+    "category": "Fast Food",
+    "disabled": false
+  },
+  {
+    "id": 10,
+    "name": "Pasta Alfredo",
+    "description": "Creamy white sauce pasta",
+    "image": "pasta_alfredo.png",
+    "price": 150,
+    "stock": 8,
+    "category": "Fast Food",
     "disabled": false
   }
 ]

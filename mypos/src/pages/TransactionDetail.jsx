@@ -1,36 +1,32 @@
-import { useParams } from "react-router-dom";
-import { images } from "../assets/constants/images";
+import { useNavigate, useParams } from "react-router-dom";
+import productData from "../data/products.json";
+import { ArrowLeft } from "lucide-react";
 
 export default function TransactionDetail() {
+  const navigate = useNavigate();
   const { id } = useParams();
 
-  // Placeholder transaction data (you can fetch this from backend in real case)
   const transactions = [
     {
       time: "8.20 AM",
       items: [
-        {
-          name: "Coke(L)",
-          description: "Large bottle",
-          qty: 1,
-          price: 65,
-          image: images.soda,
-        },
-        {
-          name: "Coke(S)",
-          description: "Small bottle",
-          qty: 2,
-          price: 25,
-          image: images.eclairs,
-        },
+        { name: "Coke", description: "L", qty: 1, price: 65 },
+        { name: "Coke", description: "S", qty: 2, price: 25 },
       ],
       cash: 100,
       mbob: 15,
     },
-    // Add more transactions as needed
   ];
 
   const transaction = transactions[id];
+
+  const getImageForItem = (name, description) => {
+    const matchedProduct = productData.find(
+      (p) => p.name === name && p.description === description
+    );
+    return matchedProduct?.image || "placeholder.png";
+  };
+
   const total = transaction.items.reduce(
     (acc, item) => acc + item.qty * item.price,
     0
@@ -38,6 +34,13 @@ export default function TransactionDetail() {
 
   return (
     <div className="p-4 bg-white min-h-screen">
+      <button
+        onClick={() => navigate("/transaction")}
+        className="text-sm text-blue-600 mb-4 underline"
+      >
+        <ArrowLeft className="inline mr-1" />
+      </button>
+
       <h1 className="text-xl font-bold mb-4">
         Transaction Details - {transaction.time}
       </h1>
@@ -49,14 +52,16 @@ export default function TransactionDetail() {
         >
           <div className="flex items-center gap-3">
             <img
-              src={item.image}
+              src={getImageForItem(item.name, item.description)}
               alt={item.name}
               className="w-12 h-12 object-contain"
             />
             <div>
               <div className="font-medium">
-                {item.name}{" "}
-                <span className="text-gray-500">({item.description})</span>
+                {item.name}
+                {item.description && (
+                  <span className="text-gray-500"> ({item.description})</span>
+                )}
               </div>
               <div className="text-sm text-gray-600">x {item.qty}</div>
             </div>
