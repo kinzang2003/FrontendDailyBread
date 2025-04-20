@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { getUser, logout } from "../../auth/auth";
 import { icons } from "../../assets/constants/icons";
-import { Bell, Ban, User } from "lucide-react";
+import { Bell, ShoppingCart, User } from "lucide-react";
 
 export default function AdminNav() {
   const user = getUser();
@@ -29,9 +29,9 @@ export default function AdminNav() {
           className="w-5 h-5 cursor-pointer hover:text-blue-600"
           onClick={() => navigate("/report")}
         />
-        <Ban
+        <ShoppingCart
           className="w-5 h-5 cursor-pointer hover:text-red-500"
-          onClick={() => navigate("/inventory?filter=disabled")}
+          onClick={() => navigate("/inventory")}
         />
         <User
           className="w-5 h-5 cursor-pointer hover:text-green-600"
