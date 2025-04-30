@@ -1,14 +1,16 @@
-import productData from "../data/products.json";
+// import productData from "../data/products.json";
 import React, { useState, useEffect } from "react";
 import InventoryActions from "../components/inventory/Actions";
 import InventoryList from "../components/inventory/List";
 import InventoryForm from "../components/inventory/Form";
 import InventoryFilter from "../components/inventory/Filter";
+import axios from "axios";
 
 const ITEMS_PER_PAGE = 6;
 
 export default function Inventory() {
-  const [inventory, setInventory] = useState(productData);
+  // const [inventory, setInventory] = useState(productData);
+  const [inventory, setInventory] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [showOnlyLowStock, setShowOnlyLowStock] = useState(false);
@@ -35,49 +37,82 @@ export default function Inventory() {
   ];
 
   useEffect(() => {
-    const hasLowStock = inventory.some(
-      (item) => !item.disabled && item.stock < 10
-    );
-    if (hasLowStock) {
-      setToast("Some items are low in stock!");
-      setTimeout(() => setToast(""), 3000);
-    }
-  }, [inventory]);
+    const fetchInventory = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8765/INVENTORY/api/inventory"
+        );
+        setInventory(response.data);
+
+        const hasLowStock = response.data.some(
+          (item) => !item.disabled && item.stock < 10
+        );
+        if (hasLowStock) {
+          setToast("Some items are low in stock!");
+          setTimeout(() => setToast(""), 3000);
+        }
+      } catch (err) {
+        console.error("Failed to fetch inventory:", err);
+      }
+    };
+
+    fetchInventory();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     setNewProduct({
       ...newProduct,
-      [name]: type === "file" ? URL.createObjectURL(files[0]) : value,
+      [name]: type === "file" ? files[0] : value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editingProduct !== null) {
-      setInventory(
-        inventory.map((item) =>
-          item.id === editingProduct
-            ? { id: editingProduct, ...newProduct, disabled: false }
-            : item
-        )
+
+    const formData = new FormData();
+    Object.entries(newProduct).forEach(([key, value]) =>
+      formData.append(key, value)
+    );
+
+    try {
+      if (editingProduct !== null) {
+        await axios.put(
+          `http://localhost:8765/INVENTORY/api/inventory/${editingProduct}`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+      } else {
+        await axios.post(
+          "http://localhost:8765/INVENTORY/api/inventory",
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+      }
+
+      // Re-fetch inventory list after update
+      const res = await axios.get(
+        "http://localhost:8765/INVENTORY/api/inventory"
       );
-    } else {
-      setInventory([
-        ...inventory,
-        { id: inventory.length + 1, ...newProduct, disabled: false },
-      ]);
+      setInventory(res.data);
+
+      setShowForm(false);
+      setEditingProduct(null);
+      setNewProduct({
+        name: "",
+        description: "",
+        image: "",
+        price: "",
+        stock: "",
+        category: "Category",
+      });
+    } catch (error) {
+      console.error("Error submitting product:", error);
     }
-    setNewProduct({
-      name: "",
-      description: "",
-      image: "",
-      price: "",
-      stock: "",
-      category: "Category",
-    });
-    setShowForm(false);
-    setEditingProduct(null);
   };
 
   const cancelForm = () => {
