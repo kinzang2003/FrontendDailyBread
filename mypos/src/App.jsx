@@ -16,7 +16,6 @@ import ReportAnalysis from "./pages/ReportAnalysis";
 import SignIn from "./pages/SignIn";
 import Transaction from "./pages/Transaction";
 import { CartProvider } from "./context/CartContext";
-
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 import { getUser } from "./auth/auth";
