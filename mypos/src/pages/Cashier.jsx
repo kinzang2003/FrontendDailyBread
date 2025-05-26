@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserIcon, Trash2 } from "lucide-react";
 
 export default function AddCashier() {
@@ -11,8 +11,34 @@ export default function AddCashier() {
   const validateEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
+  const getCashiers = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:8765/USERSERVICE/api/cashiers",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const cashiers = await res.json();
+      console.log(cashiers, " Cashiers");
+      if (res.status === 200) {
+        setCashiers(cashiers.cashiers);
+        console.log(cashiers, " Cashiers data inside");
+      }
+    } catch (err) {
+      console.log(err, " Error");
+      setError("Failed to fetch cashiers. Please try again.");
+    }
+  };
+  useEffect(() => {
+    getCashiers();
+  }, []);
 
-  const handleAddCashier = () => {
+  const handleAddCashier = async () => {
     if (!username || !email) {
       setError("Username and email are required.");
       return;
@@ -26,12 +52,49 @@ export default function AddCashier() {
     setEmail("");
     setShowForm(false);
     setError("");
+
+    const res = await fetch("http://localhost:8765/USERSERVICE/api/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({
+        userName: username,
+        email,
+      }),
+    });
+    const data = res.json();
+    console.log(data, " User Data");
   };
 
-  const handleDelete = (index) => {
+  const handleDelete = async (index, email) => {
+    console.log(index, email, " Index and Email");
     const updated = [...cashiers];
     updated.splice(index, 1);
     setCashiers(updated);
+    try {
+      const res = await fetch(
+        `http://localhost:8765/USERSERVICE/api/cashiers/${email}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await res.json();
+      console.log(data, " Deleted Data");
+      if (res.status === 200) {
+        console.log("Cashier deleted successfully");
+      } else {
+        console.log("Failed to delete cashier");
+      }
+    } catch (err) {
+      console.log(err, " Error");
+      setError("Failed to delete cashier. Please try again.");
+    }
   };
 
   return (
@@ -71,6 +134,7 @@ export default function AddCashier() {
           </button>
         </div>
       )}
+      {console.log(cashiers.length, " Cashiers Length")}
 
       {cashiers.length === 0 ? (
         <p className="text-gray-400">No Cashier</p>
@@ -83,9 +147,9 @@ export default function AddCashier() {
             >
               <div className="flex items-center gap-2">
                 <UserIcon className="w-6 h-6 text-gray-700" />
-                <div className="font-medium">{c.username}</div>
+                <div className="font-medium">{c.userName}</div>
               </div>
-              <button onClick={() => handleDelete(index)}>
+              <button onClick={() => handleDelete(index, c.email)}>
                 <Trash2 className="w-5 h-5 text-red-500 hover:text-red-700" />
               </button>
             </div>

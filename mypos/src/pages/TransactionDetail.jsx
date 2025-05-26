@@ -6,20 +6,23 @@ export default function TransactionDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const transactions = [
-    {
-      time: "8.20 AM",
-      items: [
-        { name: "Coke", description: "L", qty: 1, price: 65 },
-        { name: "Coke", description: "S", qty: 2, price: 25 },
-      ],
-      cash: 100,
-      mbob: 15,
-    },
-  ];
+  // const transactions = [
+  //   {
+  //     time: "8.20 AM",
+  //     items: [
+  //       { name: "Coke", description: "L", qty: 1, price: 65 },
+  //       { name: "Coke", description: "S", qty: 2, price: 25 },
+  //     ],
+  //     cash: 100,
+  //     mbob: 15,
+  //   },
+  // ];
+  const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
 
-  const transaction = transactions[id];
-
+  const transaction = transactions.filter(
+    (trans) => trans.id === Number(id)
+  )[0];
+  console.log(transaction, " Transaction Data", id);
   const getImageForItem = (name, description) => {
     const matchedProduct = productData.find(
       (p) => p.name === name && p.description === description
@@ -28,7 +31,7 @@ export default function TransactionDetail() {
   };
 
   const total = transaction.items.reduce(
-    (acc, item) => acc + item.qty * item.price,
+    (acc, item) => acc + item.quantity * item.price,
     0
   );
 
@@ -63,11 +66,11 @@ export default function TransactionDetail() {
                   <span className="text-gray-500"> ({item.description})</span>
                 )}
               </div>
-              <div className="text-sm text-gray-600">x {item.qty}</div>
+              <div className="text-sm text-gray-600">x {item.quantity}</div>
             </div>
           </div>
           <div className="text-right font-semibold">
-            Nu. {item.qty * item.price}
+            Nu. {item.quantity * item.price}
           </div>
         </div>
       ))}
@@ -83,7 +86,7 @@ export default function TransactionDetail() {
         </div>
         <div className="flex justify-between mb-2">
           <span className="font-medium">MBOB:</span>
-          <span className="font-bold">Nu. {transaction.mbob}</span>
+          <span className="font-bold">Nu. {transaction.digital}</span>
         </div>
       </div>
     </div>

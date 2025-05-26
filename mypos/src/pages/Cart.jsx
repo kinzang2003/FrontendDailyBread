@@ -22,10 +22,36 @@ export default function Cart() {
     updated.splice(index, 1);
     setCart(updated);
   };
-
+  const saveSale = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:8765/POSMICROSERVICE/api/sales",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            digital: mbob,
+            cash: cash,
+            date: new Date(),
+            items: cart.map((item) => ({
+              itemId: item.id,
+              quantity: item.qty,
+            })),
+          }),
+        }
+      );
+      const data = await res.json();
+      console.log(data, " Sale Data");
+    } catch (err) {
+      console.log(err, " Error");
+    }
+  };
   const handleConfirm = () => {
     console.log("Sending transaction:", cart);
-
+    saveSale();
     localStorage.removeItem("cart");
     setCart([]);
     navigate("/transaction");

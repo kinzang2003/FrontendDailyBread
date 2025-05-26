@@ -24,20 +24,43 @@ export default function SignIn() {
 
   const validateEmail = (email) => /^\S+@\S+\.\S+$/.test(email.trim());
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     setError("");
     if (!email || !password)
       return setError("Email and password are required.");
     if (!validateEmail(email)) return setError("Invalid email format.");
 
-    const user = validUsers.find(
-      (u) => u.email === email && u.password === password
+    // const user = validUsers.find(
+    //   (u) => u.email === email && u.password === password
+    // );
+
+    const user = await fetch(
+      `http://localhost:8765/USERSERVICE/api/auth/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      }
     );
-    if (user) {
-      login({ email: user.email, role: user.role });
-      navigate(user.role === "admin" ? "/dashboard" : "/product");
+    const userData = await user.json();
+    console.log(userData, " User Data");
+    // console.log(user.json(), " User");
+
+    if (userData.jwt) {
+      localStorage.setItem("token", userData.jwt);
+      localStorage.setItem("user", JSON.stringify(userData.user));
+      console.log(userData.user.authorities[0].authority, " User Dat1a");
+      if ("admin" === "admin") {
+        console.log("hello");
+        navigate("/dashboard");
+      } else if (userData.user.authorities[0].authority === "cashier") {
+        console.log(userData.user.authorities[0].authority);
+        navigate("/long");
+      }
     } else {
-      setError("Invalid credentials.");
+      alert(userData.message || "Invalid credentials");
     }
   };
 

@@ -1,25 +1,47 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Transaction() {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState("");
-
-  const transactions = [
-    { time: "8.20 AM", total: 115, cash: 100, mbob: 15 },
-    { time: "8.50 AM", total: 430, cash: 300, mbob: 130 },
-    { time: "9.00 AM", total: 50, cash: 50, mbob: 0 },
-    { time: "9.30 AM", total: 430, cash: 200, mbob: 230 },
-    { time: "9.30 AM", total: 50, cash: 30, mbob: 20 },
-    { time: "9.50 AM", total: 430, cash: 430, mbob: 0 },
-  ];
-
+  const [transactions, setTransactions] = useState([]);
+  // const transactions = [
+  //   { time: "8.20 AM", total: 115, cash: 100, mbob: 15 },
+  //   { time: "8.50 AM", total: 430, cash: 300, mbob: 130 },
+  //   { time: "9.00 AM", total: 50, cash: 50, mbob: 0 },
+  //   { time: "9.30 AM", total: 430, cash: 200, mbob: 230 },
+  //   { time: "9.30 AM", total: 50, cash: 30, mbob: 20 },
+  //   { time: "9.50 AM", total: 430, cash: 430, mbob: 0 },
+  // ];
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:8765/POSMICROSERVICE/api/saless",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const data = await res.json();
+        console.log(data, " Sale Data");
+        setTransactions(data);
+        localStorage.setItem("transactions", JSON.stringify(data));
+      } catch (err) {
+        console.log(err, " Error");
+      }
+    };
+    fetchTransactions();
+  }, []);
   const totalCash = transactions.reduce((acc, t) => acc + t.cash, 0);
-  const totalMbob = transactions.reduce((acc, t) => acc + t.mbob, 0);
-  const totalSum = transactions.reduce((acc, t) => acc + t.total, 0);
+  const totalMbob = transactions.reduce((acc, t) => acc + t.digital, 0);
+  const totalSum = transactions.reduce((acc, t) => acc + t.digital + t.cash, 0);
 
   const handleDetailsClick = (index) => {
-    navigate(`/transactions/${index}`);
+    navigate(`/details/${index}`);
   };
 
   return (
@@ -51,13 +73,18 @@ export default function Transaction() {
           {transactions.map((t, i) => (
             <tr key={i} className="border-t">
               <td>{i + 1}.</td>
-              <td>{t.time}</td>
+              <td>
+                {new Date(t.date).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </td>
               <td>{t.cash}</td>
-              <td>{t.mbob}</td>
-              <td>{t.total}</td>
+              <td>{t.digital}</td>
+              <td>{t.cash + t.digital}</td>
               <td>
                 <button
-                  onClick={() => handleDetailsClick(i)}
+                  onClick={() => handleDetailsClick(t.id)}
                   className="text-blue-500 hover:underline"
                 >
                   Details

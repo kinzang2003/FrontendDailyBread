@@ -21,6 +21,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import { getUser } from "./auth/auth";
 import AdminNav from "./components/navBar/AdminNav";
 import CashierNav from "./components/navBar/CashierNav";
+import Activation from "./pages/Activation";
 
 function LayoutWrapper({ children }) {
   const location = useLocation();
@@ -48,12 +49,13 @@ export default function App() {
             {/* Public Route */}
             <Route path="/signin" element={<SignIn />} />
             <Route path="/" element={<Navigate to="/signin" />} />
-
+            {/* Activation Route */}
+            <Route path="/activate" element={<Activation />} />
             {/* Routes for both admin and user */}
             <Route
               path="/product"
               element={
-                <ProtectedRoute allowedRoles={["admin", "user"]}>
+                <ProtectedRoute allowedRoles={["admin", "cashier"]}>
                   <Product />
                 </ProtectedRoute>
               }
@@ -61,7 +63,7 @@ export default function App() {
             <Route
               path="/cart"
               element={
-                <ProtectedRoute allowedRoles={["admin", "user"]}>
+                <ProtectedRoute allowedRoles={["admin", "cashier"]}>
                   <Cart />
                 </ProtectedRoute>
               }
@@ -69,7 +71,7 @@ export default function App() {
             <Route
               path="/transaction"
               element={
-                <ProtectedRoute allowedRoles={["admin", "user"]}>
+                <ProtectedRoute allowedRoles={["admin", "cashier"]}>
                   <Transaction />
                 </ProtectedRoute>
               }
@@ -77,7 +79,7 @@ export default function App() {
             <Route
               path="/details/:id"
               element={
-                <ProtectedRoute allowedRoles={["admin", "user"]}>
+                <ProtectedRoute allowedRoles={["admin", "cashier"]}>
                   <TransactionDetails />
                 </ProtectedRoute>
               }

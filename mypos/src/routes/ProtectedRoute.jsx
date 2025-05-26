@@ -8,7 +8,7 @@ export default function ProtectedRoute({ children, allowedRoles }) {
     return <Navigate to="/" />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
+  if (allowedRoles && !allowedRoles.includes(user.authorities[0].authority)) {
     return <Navigate to="/product" />;
   }
 
