@@ -1,3 +1,6 @@
+import ReCAPTCHA from "react-google-recaptcha";
+// const site_key = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
+const site_key = "6LfDl1MrAAAAANa0ljPvs-9Ub6eUc6ztT5E9sKyL";
 export default function SignIn({
   email,
   password,
@@ -6,6 +9,7 @@ export default function SignIn({
   onPasswordChange,
   onSignIn,
   onForgot,
+  onCaptchaChange,
 }) {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-80">
@@ -24,6 +28,11 @@ export default function SignIn({
         value={password}
         onChange={onPasswordChange}
         className="w-full p-2 border rounded mb-3"
+      />
+      <ReCAPTCHA
+        sitekey={site_key}
+        className="mb-3"
+        onChange={onCaptchaChange}
       />
       <button
         onClick={onSignIn}
