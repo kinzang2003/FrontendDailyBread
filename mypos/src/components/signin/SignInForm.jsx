@@ -1,7 +1,7 @@
 import ReCAPTCHA from "react-google-recaptcha";
 // const site_key = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 const site_key = "6LfDl1MrAAAAANa0ljPvs-9Ub6eUc6ztT5E9sKyL";
-export default function SignIn({
+export default function SignInForm({
   email,
   password,
   error,

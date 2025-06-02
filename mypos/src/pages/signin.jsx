@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { icons } from "../assets/constants/icons";
 import { login } from "../auth/auth";
-import SignInForm from "../components/signin/SignIn";
+import SignInForm from "../components/signin/SignInForm";
 import ForgotPasswordForm from "../components/signin/ForgotPassword";
 import VerificationForm from "../components/signin/Verification";
 import ResetPasswordForm from "../components/signin/ResetPassword";
