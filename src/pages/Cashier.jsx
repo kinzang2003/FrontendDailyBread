@@ -13,16 +13,14 @@ export default function AddCashier() {
   };
   const getCashiers = async () => {
     try {
-      const res = await fetch(
-        "http://localhost:8765/USERSERVICE/api/cashiers",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const res = await fetch("http://localhost:8765/user/cashiers", {
+        method: "GET",
+        include: "credentials",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const cashiers = await res.json();
       console.log(cashiers, " Cashiers");
       if (res.status === 200) {
@@ -53,7 +51,7 @@ export default function AddCashier() {
     setShowForm(false);
     setError("");
 
-    const res = await fetch("http://localhost:8765/USERSERVICE/api/register", {
+    const res = await fetch("http://localhost:8765/user/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -74,16 +72,13 @@ export default function AddCashier() {
     updated.splice(index, 1);
     setCashiers(updated);
     try {
-      const res = await fetch(
-        `http://localhost:8765/USERSERVICE/api/cashiers/${email}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const res = await fetch(`http://localhost:8765/user/cashiers/${email}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await res.json();
       console.log(data, " Deleted Data");
       if (res.status === 200) {

@@ -30,16 +30,13 @@ export default function Activation() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (token) {
-      const res = await fetch(
-        "http://localhost:8765/USERSERVICE/api/activate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ activationToken: token, password }),
-        }
-      );
+      const res = await fetch("http://localhost:8765/user/activate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ activationToken: token, password }),
+      });
       const data = await res.json();
       console.log(data, " Activation Data");
     } else {
@@ -49,7 +46,7 @@ export default function Activation() {
   //   useEffect(async () => {
 
   //     if (token) {
-  //       const res = fetch("http://localhost:8765/USERSERVICE/api/activate", {
+  //       const res = fetch("http://localhost:8765/user/activate", {
   //         method: "POST",
   //         headers: {
   //           "Content-Type": "application/json",

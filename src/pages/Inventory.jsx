@@ -39,9 +39,7 @@ export default function Inventory() {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8765/INVENTORY/api/inventory"
-        );
+        const response = await axios.get("http://localhost:8765/inventory");
         setInventory(response.data);
 
         const hasLowStock = response.data.some(
@@ -78,26 +76,20 @@ export default function Inventory() {
     try {
       if (editingProduct !== null) {
         await axios.put(
-          `http://localhost:8765/INVENTORY/api/inventory/${editingProduct}`,
+          `http://localhost:8765/inventory/${editingProduct}`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
           }
         );
       } else {
-        await axios.post(
-          "http://localhost:8765/INVENTORY/api/inventory",
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
+        await axios.post("http://localhost:8765/inventory", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       }
 
       // Re-fetch inventory list after update
-      const res = await axios.get(
-        "http://localhost:8765/INVENTORY/api/inventory"
-      );
+      const res = await axios.get("http://localhost:8765/inventory");
       setInventory(res.data);
 
       setShowForm(false);
