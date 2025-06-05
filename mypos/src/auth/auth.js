@@ -1,7 +1,16 @@
-// src/auth/auth.js
-export const getUser = () => {
-  return JSON.parse(localStorage.getItem("user"));
-};
+export function getUser() {
+  const stored = localStorage.getItem("user");
+  if (!stored) return null;
+
+  const user = JSON.parse(stored);
+
+  // Ensure there's a 'role' property for easier checks
+  if (!user.role && Array.isArray(user.authorities)) {
+    user.role = user.authorities[0]?.authority;
+  }
+
+  return user;
+}
 
 export const isAuthenticated = () => {
   return !!localStorage.getItem("user");
