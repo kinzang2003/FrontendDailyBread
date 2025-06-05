@@ -1,15 +1,30 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useCallback } from "react"; // Import useCallback
+import { useEffect, useState, useCallback } from "react";
 
 export default function Transaction() {
   const navigate = useNavigate();
-  // Initialize selectedDate with today's date in YYYY-MM-DD format
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().slice(0, 10)
-  );
+
+  // Helper function to get today's date in YYYY-MM-DD format (local time)
+  const getTodayFormattedDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Helper function to get the current timezone offset in hours
+  // Example: for UTC+6, getTimezoneOffset() returns -360 minutes, so offsetHours will be 6
+  const getUTCOffsetInHours = () => {
+    const offsetMinutes = new Date().getTimezoneOffset();
+    return -offsetMinutes / 60; // Convert minutes to hours and invert sign
+  };
+
+  // Initialize selectedDate with today's local date
+  const [selectedDate, setSelectedDate] = useState(getTodayFormattedDate());
   const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(false); // Add loading state
-  const [error, setError] = useState(null); // Add error state
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const API_GATEWAY_BASE_URL = "http://localhost:8765"; // Your API Gateway URL
 
@@ -19,21 +34,21 @@ export default function Transaction() {
       setLoading(true);
       setError(null);
       try {
-        // Use the new API endpoint with date filtering
+        const offset = getUTCOffsetInHours(); // Get current offset
+        // Use the new API endpoint with date filtering and timezone offset
         const res = await fetch(
-          `${API_GATEWAY_BASE_URL}/pos/sales/by-date?date=${dateToFetch}`,
+          `${API_GATEWAY_BASE_URL}/pos/sales/by-date?date=${dateToFetch}&offsetHours=${offset}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure token is correctly handled
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );
 
         if (!res.ok) {
           if (res.status === 404) {
-            // No sales found for the date
             setTransactions([]);
             return;
           }
@@ -43,26 +58,23 @@ export default function Transaction() {
         const data = await res.json();
         console.log(data, " Sale Data for date:", dateToFetch);
         setTransactions(data);
-        // Remove localStorage.setItem for transactions, as data should be fresh from API
-        // localStorage.setItem("transactions", JSON.stringify(data));
       } catch (err) {
         console.error(err, " Error fetching sales");
         setError("Failed to load transactions. Please try again.");
-        setTransactions([]); // Clear transactions on error
+        setTransactions([]);
       } finally {
         setLoading(false);
       }
     },
-    [API_GATEWAY_BASE_URL]
-  ); // Dependency on API_GATEWAY_BASE_URL (though it's constant)
+    [API_GATEWAY_BASE_URL] // Dependency on API_GATEWAY_BASE_URL
+  );
 
   // Effect to fetch transactions when component mounts or selectedDate changes
   useEffect(() => {
-    // Only fetch if a date is selected
     if (selectedDate) {
       fetchTransactions(selectedDate);
     }
-  }, [selectedDate, fetchTransactions]); // Re-run when selectedDate or fetchTransactions changes
+  }, [selectedDate, fetchTransactions]);
 
   // Calculate totals
   const totalCash = transactions.reduce((acc, t) => acc + t.cash, 0).toFixed(2);
@@ -72,7 +84,6 @@ export default function Transaction() {
   const totalSum = (parseFloat(totalCash) + parseFloat(totalMbob)).toFixed(2);
 
   const handleDetailsClick = (saleId) => {
-    // Changed to use saleId, not index
     navigate(`/details/${saleId}`);
   };
 
@@ -94,8 +105,8 @@ export default function Transaction() {
           id="transactionDate"
           value={selectedDate}
           onChange={(e) => setSelectedDate(e.target.value)}
-          // Disable future dates
-          max={new Date().toISOString().slice(0, 10)}
+          // Set max to today's local date using the helper function
+          max={getTodayFormattedDate()}
           className="border border-gray-300 px-4 py-2 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
         />
       </div>
@@ -120,8 +131,6 @@ export default function Transaction() {
 
       {!loading && !error && transactions.length > 0 && (
         <div className="overflow-x-auto flex-grow mb-20">
-          {" "}
-          {/* mb-20 to make space for fixed totals */}
           <table className="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
             <thead className="bg-gray-200">
               <tr>
@@ -151,17 +160,14 @@ export default function Transaction() {
                   key={t.id}
                   className="border-t border-gray-200 hover:bg-gray-50"
                 >
-                  {" "}
-                  {/* Use t.id as key */}
                   <td className="py-3 px-4 text-sm text-gray-700">{i + 1}.</td>
                   <td className="py-3 px-4 text-sm text-gray-700">
-                    {/* Format OffsetDateTime to time string */}
                     {t.date
                       ? new Date(t.date).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true, // Use 12-hour format with AM/PM
-                        })
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })
                       : "N/A"}
                   </td>
                   <td className="py-3 px-4 text-sm text-gray-700">
@@ -188,7 +194,6 @@ export default function Transaction() {
         </div>
       )}
 
-      {/* Totals Section fixed at the bottom */}
       <div
         className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t-2 border-gray-200 shadow-lg
                     flex flex-col sm:flex-row justify-between items-center z-10"
