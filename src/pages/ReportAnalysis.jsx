@@ -141,7 +141,7 @@ export default function ReportAnalysis() {
             <YAxis stroke="#6B7280" />
             <Tooltip
               cursor={{ fill: "rgba(0, 0, 0, 0.1)" }}
-              formatter={(value) => `$${value.toFixed(2)}`}
+              formatter={(value) => `Nu. ${value.toFixed(2)}`}
               labelFormatter={(label) =>
                 `${view === "weekly" ? "Day" : "Week"}: ${label}`
               }
