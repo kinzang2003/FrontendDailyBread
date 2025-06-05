@@ -13,7 +13,7 @@ import TransactionDetails from "./pages/TransactionDetail";
 import Inventory from "./pages/Inventory";
 import Product from "./pages/Product";
 import ReportAnalysis from "./pages/ReportAnalysis";
-import SignIn from "./pages/Signin";
+import SignIn from "./pages/SignIn";
 import Transaction from "./pages/Transaction";
 import { CartProvider } from "./context/CartContext";
 import ProtectedRoute from "./routes/ProtectedRoute";

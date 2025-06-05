@@ -105,21 +105,19 @@ export default function ReportAnalysis() {
 
       <div className="mb-4 flex space-x-2">
         <button
-          className={`px-4 py-2 rounded-md transition-all duration-200 ${
-            view === "weekly"
-              ? "bg-blue-600 text-white shadow-md"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-          }`}
+          className={`px-4 py-2 rounded-md transition-all duration-200 ${view === "weekly"
+            ? "bg-blue-600 text-white shadow-md"
+            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
           onClick={() => setView("weekly")}
         >
           Weekly Sales
         </button>
         <button
-          className={`px-4 py-2 rounded-md transition-all duration-200 ${
-            view === "monthly"
-              ? "bg-blue-600 text-white shadow-md"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-          }`}
+          className={`px-4 py-2 rounded-md transition-all duration-200 ${view === "monthly"
+            ? "bg-blue-600 text-white shadow-md"
+            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
           onClick={() => setView("monthly")}
         >
           Monthly Sales
@@ -138,10 +136,13 @@ export default function ReportAnalysis() {
               dataKey={view === "weekly" ? "day" : "week"}
               stroke="#6B7280"
             />
-            <YAxis stroke="#6B7280" />
+            <YAxis
+              stroke="#6B7280"
+              tickFormatter={(value) => `Nu. ${value.toFixed(2)}`} // ADDED: Y-axis formatter
+            />
             <Tooltip
               cursor={{ fill: "rgba(0, 0, 0, 0.1)" }}
-              formatter={(value) => `Nu. ${value.toFixed(2)}`}
+              formatter={(value) => `Nu. ${value.toFixed(2)}`} // Changed to Nu.
               labelFormatter={(label) =>
                 `${view === "weekly" ? "Day" : "Week"}: ${label}`
               }
@@ -168,21 +169,19 @@ export default function ReportAnalysis() {
       <div className="flex gap-2 mb-4">
         <button
           onClick={() => setSortType("asc")}
-          className={`px-4 py-2 rounded-md transition-all duration-200 ${
-            sortType === "asc"
-              ? "bg-green-600 text-white shadow-md"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-          }`}
+          className={`px-4 py-2 rounded-md transition-all duration-200 ${sortType === "asc"
+            ? "bg-green-600 text-white shadow-md"
+            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
         >
           Sort by Sales: Ascending
         </button>
         <button
           onClick={() => setSortType("desc")}
-          className={`px-4 py-2 rounded-md transition-all duration-200 ${
-            sortType === "desc"
-              ? "bg-red-600 text-white shadow-md"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-          }`}
+          className={`px-4 py-2 rounded-md transition-all duration-200 ${sortType === "desc"
+            ? "bg-red-600 text-white shadow-md"
+            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
         >
           Sort by Sales: Descending
         </button>
