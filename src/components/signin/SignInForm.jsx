@@ -2,8 +2,8 @@
 import ReCAPTCHA from "react-google-recaptcha";
 
 // The reCAPTCHA site key for development/testing. Replace with your actual key in production.
-// const site_key = "6LfDl1MrAAAAANa0ljPvs-9Ub6eUc6ztT5E9sKyL";
-const site_key = "6LfuH1crAAAAAPg-zKE58QNQqIHmQYsX8jYL-lgr";
+const site_key = "6LfDl1MrAAAAANa0ljPvs-9Ub6eUc6ztT5E9sKyL";
+// const site_key = "6LfuH1crAAAAAPg-zKE58QNQqIHmQYsX8jYL-lgr";
 
 export default function SignInForm({
   email,
@@ -52,11 +52,10 @@ export default function SignInForm({
       <button
         onClick={onSignIn}
         disabled={!isCaptchaCompleted} // Button is disabled if reCAPTCHA is not done
-        className={`w-full py-2 rounded text-white ${
-          isCaptchaCompleted
-            ? "bg-primary hover:bg-primary-light" // Active styles
-            : "bg-gray-400 cursor-not-allowed" // Disabled styles
-        }`}
+        className={`w-full py-2 rounded text-white ${isCaptchaCompleted
+          ? "bg-primary hover:bg-primary-light" // Active styles
+          : "bg-gray-400 cursor-not-allowed" // Disabled styles
+          }`}
       >
         Next
       </button>
