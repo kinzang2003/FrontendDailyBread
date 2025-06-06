@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronLeft } from "lucide-react";
 
 export default function TransactionDetail() {
   const navigate = useNavigate();
@@ -89,32 +89,21 @@ export default function TransactionDetail() {
       {/* Enhanced Back Button UI */}
       <button
         onClick={() => navigate("/transaction")}
-        className="
-          flex items-center gap-1
-          px-4 py-2 mb-6
-          bg-blue-600 text-white
-          rounded-md shadow-md
-          hover:bg-blue-700
-          transition-all duration-200
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-          self-start // Aligns the button to the left
-        "
       >
-        <ArrowLeft className="h-5 w-5" /> {/* Increased icon size slightly */}
-        Back to Transactions
+        <ChevronLeft className="h-5 w-5 text-primary" /> {/* Increased icon size slightly */}
       </button>
 
       <h1 className="text-2xl font-bold mb-6 text-gray-800">
         Transaction Details -{" "}
         {transactionDetail.date
           ? new Date(transactionDetail.date).toLocaleString("en-US", {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            })
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })
           : "N/A"}
       </h1>
 

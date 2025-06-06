@@ -15,10 +15,10 @@ export default function AddCashier() {
     try {
       const res = await fetch("http://localhost:8765/user/cashiers", {
         method: "GET",
-        include: "credentials",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          // Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
       const cashiers = await res.json();
@@ -53,6 +53,7 @@ export default function AddCashier() {
 
     const res = await fetch("http://localhost:8765/user/register", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -74,6 +75,7 @@ export default function AddCashier() {
     try {
       const res = await fetch(`http://localhost:8765/user/cashiers/${email}`, {
         method: "DELETE",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,

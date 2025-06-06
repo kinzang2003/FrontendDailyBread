@@ -1,6 +1,6 @@
 export default function ForgotPassword({
   email,
-  error,
+  error, // This prop now correctly receives error messages from SignIn.jsx's toast system
   onEmailChange,
   onConfirm,
 }) {

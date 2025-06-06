@@ -14,10 +14,9 @@ export default function Transaction() {
   };
 
   // Helper function to get the current timezone offset in hours
-  // Example: for UTC+6, getTimezoneOffset() returns -360 minutes, so offsetHours will be 6
   const getUTCOffsetInHours = () => {
-    const offsetMinutes = new Date().getTimezoneOffset();
-    return -offsetMinutes / 60; // Convert minutes to hours and invert sign
+    const offsetMinutes = new Date().getTimezoneOffset(); // Returns offset in minutes
+    return -offsetMinutes / 60; // Convert minutes to hours and invert sign for UTC+
   };
 
   // Initialize selectedDate with today's local date
@@ -26,7 +25,7 @@ export default function Transaction() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const API_GATEWAY_BASE_URL = "http://localhost:8765"; // Your API Gateway URL
+  const API_GATEWAY_BASE_URL = "http://localhost:8765";
 
   // Memoize fetchTransactions to prevent unnecessary re-creations
   const fetchTransactions = useCallback(
@@ -35,14 +34,13 @@ export default function Transaction() {
       setError(null);
       try {
         const offset = getUTCOffsetInHours(); // Get current offset
-        // Use the new API endpoint with date filtering and timezone offset
         const res = await fetch(
           `${API_GATEWAY_BASE_URL}/pos/sales/by-date?date=${dateToFetch}&offsetHours=${offset}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // Using localStorage token
             },
           }
         );
@@ -66,17 +64,15 @@ export default function Transaction() {
         setLoading(false);
       }
     },
-    [API_GATEWAY_BASE_URL] // Dependency on API_GATEWAY_BASE_URL
+    [API_GATEWAY_BASE_URL]
   );
 
-  // Effect to fetch transactions when component mounts or selectedDate changes
   useEffect(() => {
     if (selectedDate) {
       fetchTransactions(selectedDate);
     }
   }, [selectedDate, fetchTransactions]);
 
-  // Calculate totals
   const totalCash = transactions.reduce((acc, t) => acc + t.cash, 0).toFixed(2);
   const totalMbob = transactions
     .reduce((acc, t) => acc + t.digital, 0)
@@ -105,7 +101,6 @@ export default function Transaction() {
           id="transactionDate"
           value={selectedDate}
           onChange={(e) => setSelectedDate(e.target.value)}
-          // Set max to today's local date using the helper function
           max={getTodayFormattedDate()}
           className="border border-gray-300 px-4 py-2 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
         />
@@ -162,11 +157,13 @@ export default function Transaction() {
                 >
                   <td className="py-3 px-4 text-sm text-gray-700">{i + 1}.</td>
                   <td className="py-3 px-4 text-sm text-gray-700">
+                    {/* Updated Time Display to use client's local timezone */}
                     {t.date
                       ? new Date(t.date).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                         hour12: true,
+                        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone // Explicitly use client's timezone
                       })
                       : "N/A"}
                   </td>
