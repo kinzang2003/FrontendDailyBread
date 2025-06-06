@@ -2,7 +2,8 @@
 import ReCAPTCHA from "react-google-recaptcha";
 
 // The reCAPTCHA site key for development/testing. Replace with your actual key in production.
-const site_key = "6LfDl1MrAAAAANa0ljPvs-9Ub6eUc6ztT5E9sKyL";
+// const site_key = "6LfDl1MrAAAAANa0ljPvs-9Ub6eUc6ztT5E9sKyL";
+const site_key = "6LfuH1crAAAAAPg-zKE58QNQqIHmQYsX8jYL-lgr";
 
 export default function SignInForm({
   email,
